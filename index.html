@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ditado por Voz — fale e receba texto limpo e formatado por IA, estilo Wispr Flow." />
+  <title>Ditado por Voz</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">🎙️</span>
+        <h1>Ditado por Voz</h1>
+      </div>
+      <div class="topbar-actions">
+        <button id="btn-history" class="icon-btn" title="Histórico" aria-label="Histórico">🕘</button>
+        <button id="btn-settings" class="icon-btn" title="Configurações" aria-label="Configurações">⚙️</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <div id="unsupported-banner" class="banner banner-error hidden">
+        Seu navegador não suporta reconhecimento de voz.
+        Use o <strong>Google Chrome</strong> ou <strong>Microsoft Edge</strong>.
+      </div>
+      <div id="no-key-banner" class="banner banner-info hidden">
+        Formatação por IA desativada — <button id="btn-open-settings-inline" class="link-btn">configure sua chave de API</button> para limpar e formatar o texto automaticamente.
+      </div>
+
+      <section class="mic-section">
+        <button id="btn-mic" class="mic-btn" aria-label="Iniciar ditado">
+          <span class="mic-icon">🎤</span>
+        </button>
+        <p id="mic-status" class="mic-status">Clique no microfone ou pressione <kbd>Ctrl</kbd>+<kbd>Espaço</kbd> para ditar</p>
+      </section>
+
+      <section class="tones" aria-label="Tom do texto">
+        <button class="tone-chip active" data-tone="natural">Natural</button>
+        <button class="tone-chip" data-tone="email">E-mail</button>
+        <button class="tone-chip" data-tone="mensagem">Mensagem</button>
+        <button class="tone-chip" data-tone="anotacoes">Anotações</button>
+      </section>
+
+      <section class="transcript-card">
+        <div class="transcript-header">
+          <span id="transcript-label" class="transcript-label">Transcrição</span>
+          <div class="transcript-actions">
+            <button id="btn-toggle-raw" class="ghost-btn hidden">Ver texto bruto</button>
+            <button id="btn-clear" class="ghost-btn">Limpar</button>
+            <button id="btn-copy" class="primary-btn" disabled>Copiar</button>
+          </div>
+        </div>
+        <div id="transcript" class="transcript" aria-live="polite">
+          <span class="placeholder">O texto ditado aparecerá aqui…</span>
+        </div>
+        <div id="ai-status" class="ai-status hidden"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Feito com Web Speech API + IA · O áudio é processado pelo navegador; sua chave de API fica só neste dispositivo.</span>
+    </footer>
+  </div>
+
+  <!-- Painel de histórico -->
+  <aside id="history-panel" class="panel hidden" aria-label="Histórico de dictações">
+    <div class="panel-header">
+      <h2>Histórico</h2>
+      <div>
+        <button id="btn-clear-history" class="ghost-btn">Limpar tudo</button>
+        <button id="btn-close-history" class="icon-btn" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <ul id="history-list" class="history-list"></ul>
+    <p id="history-empty" class="history-empty">Nenhuma dictação ainda.</p>
+  </aside>
+
+  <!-- Modal de configurações -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal" role="dialog" aria-labelledby="settings-title">
+      <div class="modal-header">
+        <h2 id="settings-title">Configurações</h2>
+        <button id="btn-close-settings" class="icon-btn" aria-label="Fechar">✕</button>
+      </div>
+      <form id="settings-form" class="settings-form">
+        <label class="field">
+          <span>Idioma do ditado</span>
+          <select id="setting-lang">
+            <option value="pt-BR">Português (Brasil)</option>
+            <option value="pt-PT">Português (Portugal)</option>
+            <option value="en-US">English (US)</option>
+            <option value="es-ES">Español</option>
+            <option value="fr-FR">Français</option>
+            <option value="de-DE">Deutsch</option>
+            <option value="it-IT">Italiano</option>
+          </select>
+        </label>
+
+        <label class="field checkbox-field">
+          <input type="checkbox" id="setting-ai-enabled" checked />
+          <span>Formatar texto com IA ao terminar o ditado</span>
+        </label>
+
+        <label class="field">
+          <span>Provedor de IA</span>
+          <select id="setting-provider">
+            <option value="anthropic">Anthropic (Claude)</option>
+            <option value="openai">OpenAI (GPT)</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Chave de API</span>
+          <input type="password" id="setting-api-key" placeholder="sk-..." autocomplete="off" />
+          <small class="field-hint">Salva apenas no seu navegador (localStorage). Nunca é enviada a outro lugar além do provedor escolhido.</small>
+        </label>
+
+        <label class="field checkbox-field">
+          <input type="checkbox" id="setting-auto-copy" />
+          <span>Copiar automaticamente ao terminar a formatação</span>
+        </label>
+
+        <div class="modal-actions">
+          <button type="submit" class="primary-btn">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
