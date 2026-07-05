@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Ditado por Voz — fale e receba texto limpo e formatado por IA, estilo Wispr Flow." />
+  <meta name="theme-color" content="#0f1117" />
   <title>Ditado por Voz</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎙️</text></svg>" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
 </head>
 <body>
   <div class="app">
@@ -16,6 +19,9 @@
         <h1>Ditado por Voz</h1>
       </div>
       <div class="topbar-actions">
+        <button id="btn-install" class="icon-btn hidden" title="Instalar app" aria-label="Instalar app">📥</button>
+        <button id="btn-theme" class="icon-btn" title="Tema claro/escuro" aria-label="Alternar tema">🌗</button>
+        <button id="btn-stats" class="icon-btn" title="Estatísticas" aria-label="Estatísticas">📊</button>
         <button id="btn-history" class="icon-btn" title="Histórico" aria-label="Histórico">🕘</button>
         <button id="btn-settings" class="icon-btn" title="Configurações" aria-label="Configurações">⚙️</button>
       </div>
@@ -23,8 +29,8 @@
 
     <main class="main">
       <div id="unsupported-banner" class="banner banner-error hidden">
-        Seu navegador não suporta reconhecimento de voz.
-        Use o <strong>Google Chrome</strong> ou <strong>Microsoft Edge</strong>.
+        Seu navegador não suporta reconhecimento de voz nativo.
+        Use o <strong>Google Chrome</strong>/<strong>Edge</strong>, ou configure o motor <strong>Whisper</strong> nas configurações.
       </div>
       <div id="no-key-banner" class="banner banner-info hidden">
         Formatação por IA desativada — <button id="btn-open-settings-inline" class="link-btn">configure sua chave de API</button> para limpar e formatar o texto automaticamente.
@@ -50,6 +56,7 @@
           <div class="transcript-actions">
             <button id="btn-toggle-raw" class="ghost-btn hidden">Ver texto bruto</button>
             <button id="btn-clear" class="ghost-btn">Limpar</button>
+            <button id="btn-share" class="ghost-btn hidden">Compartilhar</button>
             <button id="btn-copy" class="primary-btn" disabled>Copiar</button>
           </div>
         </div>
@@ -69,14 +76,50 @@
   <aside id="history-panel" class="panel hidden" aria-label="Histórico de dictações">
     <div class="panel-header">
       <h2>Histórico</h2>
-      <div>
-        <button id="btn-clear-history" class="ghost-btn">Limpar tudo</button>
-        <button id="btn-close-history" class="icon-btn" aria-label="Fechar">✕</button>
-      </div>
+      <button id="btn-close-history" class="icon-btn" aria-label="Fechar">✕</button>
+    </div>
+    <div class="panel-toolbar">
+      <input id="history-search" type="search" placeholder="Buscar no histórico…" aria-label="Buscar no histórico" />
+    </div>
+    <div class="panel-toolbar">
+      <button id="btn-export-txt" class="ghost-btn">Exportar .txt</button>
+      <button id="btn-export-md" class="ghost-btn">Exportar .md</button>
+      <button id="btn-clear-history" class="ghost-btn danger">Limpar</button>
     </div>
     <ul id="history-list" class="history-list"></ul>
     <p id="history-empty" class="history-empty">Nenhuma dictação ainda.</p>
   </aside>
+
+  <!-- Modal de estatísticas -->
+  <div id="stats-modal" class="modal-overlay hidden">
+    <div class="modal" role="dialog" aria-labelledby="stats-title">
+      <div class="modal-header">
+        <h2 id="stats-title">Estatísticas</h2>
+        <button id="btn-close-stats" class="icon-btn" aria-label="Fechar">✕</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span id="stat-dictations" class="stat-value">0</span>
+          <span class="stat-label">Dictações</span>
+        </div>
+        <div class="stat-card">
+          <span id="stat-words" class="stat-value">0</span>
+          <span class="stat-label">Palavras ditadas</span>
+        </div>
+        <div class="stat-card">
+          <span id="stat-time" class="stat-value">0 s</span>
+          <span class="stat-label">Tempo economizado</span>
+        </div>
+        <div class="stat-card">
+          <span id="stat-streak" class="stat-value">0</span>
+          <span class="stat-label">Dias seguidos</span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="btn-reset-stats" class="ghost-btn danger">Zerar estatísticas</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Modal de configurações -->
   <div id="settings-modal" class="modal-overlay hidden">
@@ -86,42 +129,98 @@
         <button id="btn-close-settings" class="icon-btn" aria-label="Fechar">✕</button>
       </div>
       <form id="settings-form" class="settings-form">
-        <label class="field">
-          <span>Idioma do ditado</span>
-          <select id="setting-lang">
-            <option value="pt-BR">Português (Brasil)</option>
-            <option value="pt-PT">Português (Portugal)</option>
-            <option value="en-US">English (US)</option>
-            <option value="es-ES">Español</option>
-            <option value="fr-FR">Français</option>
-            <option value="de-DE">Deutsch</option>
-            <option value="it-IT">Italiano</option>
-          </select>
-        </label>
+        <fieldset class="settings-section">
+          <legend>Transcrição</legend>
+          <label class="field">
+            <span>Motor de transcrição</span>
+            <select id="setting-engine">
+              <option value="webspeech">Navegador (Web Speech, tempo real, grátis)</option>
+              <option value="whisper">Whisper (OpenAI, mais preciso, pago)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Idioma do ditado</span>
+            <select id="setting-lang">
+              <option value="pt-BR">Português (Brasil)</option>
+              <option value="pt-PT">Português (Portugal)</option>
+              <option value="en-US">English (US)</option>
+              <option value="es-ES">Español</option>
+              <option value="fr-FR">Français</option>
+              <option value="de-DE">Deutsch</option>
+              <option value="it-IT">Italiano</option>
+            </select>
+          </label>
+          <label class="field checkbox-field">
+            <input type="checkbox" id="setting-voice-commands" checked />
+            <span>Comandos de voz de pontuação ("vírgula", "nova linha", "apagar última frase"…)</span>
+          </label>
+          <label class="field whisper-key hidden">
+            <span>Chave OpenAI (Whisper)</span>
+            <input type="password" id="setting-whisper-key" placeholder="sk-..." autocomplete="off" />
+            <small class="field-hint">Necessária apenas para o motor Whisper. Se o provedor de IA já for OpenAI, a mesma chave é usada.</small>
+          </label>
+        </fieldset>
 
-        <label class="field checkbox-field">
-          <input type="checkbox" id="setting-ai-enabled" checked />
-          <span>Formatar texto com IA ao terminar o ditado</span>
-        </label>
+        <fieldset class="settings-section">
+          <legend>Formatação por IA</legend>
+          <label class="field checkbox-field">
+            <input type="checkbox" id="setting-ai-enabled" checked />
+            <span>Formatar texto com IA ao terminar o ditado</span>
+          </label>
+          <label class="field">
+            <span>Provedor de IA</span>
+            <select id="setting-provider">
+              <option value="anthropic">Anthropic (Claude)</option>
+              <option value="openai">OpenAI (GPT)</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Chave de API</span>
+            <input type="password" id="setting-api-key" placeholder="sk-..." autocomplete="off" />
+            <small class="field-hint">Salva apenas no seu navegador (localStorage). Nunca é enviada a outro lugar além do provedor escolhido.</small>
+          </label>
+          <label class="field">
+            <span>Traduzir para</span>
+            <select id="setting-translate">
+              <option value="">Não traduzir</option>
+              <option value="inglês">Inglês</option>
+              <option value="espanhol">Espanhol</option>
+              <option value="francês">Francês</option>
+              <option value="alemão">Alemão</option>
+              <option value="italiano">Italiano</option>
+              <option value="português">Português</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Instruções extras para a IA (opcional)</span>
+            <textarea id="setting-custom-prompt" rows="2" placeholder="Ex.: seja mais formal, use tratamento por você…"></textarea>
+          </label>
+        </fieldset>
 
-        <label class="field">
-          <span>Provedor de IA</span>
-          <select id="setting-provider">
-            <option value="anthropic">Anthropic (Claude)</option>
-            <option value="openai">OpenAI (GPT)</option>
-          </select>
-        </label>
+        <fieldset class="settings-section">
+          <legend>Dicionário pessoal</legend>
+          <label class="field">
+            <span>Termos e correções (um por linha)</span>
+            <textarea id="setting-dictionary" rows="3" placeholder="Gericlass&#10;guéri clas => Gericlass"></textarea>
+            <small class="field-hint">Um termo por linha. Use "ouvido errado =&gt; grafia certa" para correção automática.</small>
+          </label>
+        </fieldset>
 
-        <label class="field">
-          <span>Chave de API</span>
-          <input type="password" id="setting-api-key" placeholder="sk-..." autocomplete="off" />
-          <small class="field-hint">Salva apenas no seu navegador (localStorage). Nunca é enviada a outro lugar além do provedor escolhido.</small>
-        </label>
+        <fieldset class="settings-section">
+          <legend>Snippets (expansões)</legend>
+          <label class="field">
+            <span>Gatilho =&gt; texto (um por linha)</span>
+            <textarea id="setting-snippets" rows="3" placeholder="minha assinatura => Atenciosamente, Geri — GeriClass"></textarea>
+          </label>
+        </fieldset>
 
-        <label class="field checkbox-field">
-          <input type="checkbox" id="setting-auto-copy" />
-          <span>Copiar automaticamente ao terminar a formatação</span>
-        </label>
+        <fieldset class="settings-section">
+          <legend>Geral</legend>
+          <label class="field checkbox-field">
+            <input type="checkbox" id="setting-auto-copy" />
+            <span>Copiar automaticamente ao terminar a formatação</span>
+          </label>
+        </fieldset>
 
         <div class="modal-actions">
           <button type="submit" class="primary-btn">Salvar</button>

@@ -1,0 +1,12 @@
+{
+  "name": "ditadoporvoz-desktop",
+  "version": "1.0.0",
+  "description": "App desktop de Ditado por Voz (Electron) — atalho global e ditado em qualquer lugar.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}

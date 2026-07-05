@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="popup.css" />
+  <title>Ditado por Voz</title>
+</head>
+<body>
+  <header class="head">
+    <span class="title">🎙️ Ditado por Voz</span>
+    <button id="btn-settings" class="icon-btn" title="Configurações" aria-label="Configurações">⚙️</button>
+  </header>
+
+  <div id="settings" class="settings hidden">
+    <label>
+      Provedor de IA
+      <select id="provider">
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="openai">OpenAI (GPT)</option>
+      </select>
+    </label>
+    <label>
+      Chave de API
+      <input id="api-key" type="password" placeholder="sk-..." autocomplete="off" />
+    </label>
+    <label>
+      Idioma
+      <select id="lang">
+        <option value="pt-BR">Português (BR)</option>
+        <option value="en-US">English (US)</option>
+        <option value="es-ES">Español</option>
+        <option value="fr-FR">Français</option>
+      </select>
+    </label>
+    <label class="row">
+      <input id="ai-enabled" type="checkbox" checked /> Formatar com IA
+    </label>
+    <label class="row">
+      <input id="voice-commands" type="checkbox" checked /> Comandos de voz de pontuação
+    </label>
+    <button id="btn-save" class="primary">Salvar</button>
+  </div>
+
+  <main class="body">
+    <div class="mic-row">
+      <button id="btn-mic" class="mic">🎤</button>
+      <span id="status" class="status">Clique para ditar</span>
+    </div>
+
+    <div class="tones">
+      <button class="tone active" data-tone="natural">Natural</button>
+      <button class="tone" data-tone="email">E-mail</button>
+      <button class="tone" data-tone="mensagem">Msg</button>
+      <button class="tone" data-tone="anotacoes">Notas</button>
+    </div>
+
+    <textarea id="result" placeholder="O texto aparecerá aqui…" rows="6"></textarea>
+
+    <div class="actions">
+      <button id="btn-copy" class="ghost" disabled>Copiar</button>
+      <button id="btn-insert" class="primary" disabled>Inserir na página</button>
+    </div>
+  </main>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
