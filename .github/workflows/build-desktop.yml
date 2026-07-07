@@ -1,0 +1,61 @@
+# Gera os instaladores do app desktop (Windows .exe, macOS .dmg, Linux .AppImage).
+#
+# Como usar:
+#  - Manual: aba Actions → "Build desktop installers" → Run workflow.
+#    Os instaladores ficam em "Artifacts" na página da execução.
+#  - Release: crie uma tag "v1.0.0" (git tag v1.0.0 && git push origin v1.0.0).
+#    Os instaladores são anexados automaticamente a uma Release no GitHub.
+
+name: Build desktop installers
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact: DitadoPorVoz-windows
+            pattern: desktop/dist/*.exe
+          - os: macos-latest
+            artifact: DitadoPorVoz-macos
+            pattern: desktop/dist/*.dmg
+          - os: ubuntu-latest
+            artifact: DitadoPorVoz-linux
+            pattern: desktop/dist/*.AppImage
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependências
+        working-directory: desktop
+        run: npm install
+
+      - name: Gerar instalador
+        working-directory: desktop
+        run: npm run dist
+
+      - name: Publicar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.pattern }}
+          if-no-files-found: error
+
+      - name: Anexar à release (apenas em tags)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.pattern }}

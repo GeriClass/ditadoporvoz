@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="overlay.css" />
+  <title>Ditado por Voz</title>
+</head>
+<body>
+  <div id="pill" class="pill state-idle">
+    <div class="pill-main">
+      <div id="orb" class="orb">🎤</div>
+      <div class="pill-body">
+        <span id="pill-title" class="pill-title">Pronto</span>
+        <span id="pill-hint" class="pill-hint">Fale agora…</span>
+      </div>
+      <span id="timer" class="timer hidden">0:00</span>
+      <button id="btn-cancel" class="pill-btn" title="Cancelar">✕</button>
+      <button id="btn-config" class="pill-btn" title="Configurações">⚙</button>
+    </div>
+    <div id="bars" class="bars hidden">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+  <script type="module" src="overlay.js"></script>
+</body>
+</html>

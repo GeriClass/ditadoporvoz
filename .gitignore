@@ -1,5 +1,7 @@
 node_modules/
 desktop/node_modules/
+desktop/web/
+desktop/dist/
 dist/
 *.log
 .DS_Store

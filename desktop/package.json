@@ -1,12 +1,51 @@
 {
   "name": "ditadoporvoz-desktop",
   "version": "1.0.0",
-  "description": "App desktop de Ditado por Voz (Electron) — atalho global e ditado em qualquer lugar.",
+  "description": "Ditado por Voz — aperte um atalho em qualquer app, fale, e o texto é colado onde você estava digitando.",
+  "author": "GeriClass <gericlass@gericlass.com.br>",
+  "license": "MIT",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "prestart": "node copy-core.js",
+    "start": "electron .",
+    "predist": "node copy-core.js",
+    "dist": "electron-builder --publish never"
   },
   "devDependencies": {
-    "electron": "^31.0.0"
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "br.com.gericlass.ditadoporvoz",
+    "productName": "Ditado por Voz",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!dist",
+      "!copy-core.js",
+      "!README.md"
+    ],
+    "win": {
+      "target": "nsis",
+      "artifactName": "DitadoPorVoz-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "artifactName": "DitadoPorVoz-${version}.${ext}"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility",
+      "artifactName": "DitadoPorVoz-${version}.${ext}"
+    }
   }
 }

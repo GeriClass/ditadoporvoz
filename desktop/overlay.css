@@ -1,0 +1,164 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: transparent;
+  overflow: hidden;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  user-select: none;
+}
+
+.pill {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  min-width: 320px;
+  max-width: 404px;
+  background: rgba(18, 20, 30, 0.94);
+  border: 1px solid rgba(124, 92, 255, 0.45);
+  border-radius: 22px;
+  padding: 12px 16px;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.55);
+  color: #e8eaf2;
+  backdrop-filter: blur(8px);
+  -webkit-app-region: drag; /* arrastável */
+}
+
+.pill-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.orb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  background: linear-gradient(160deg, #262a3d, #1b1e2c);
+  border: 2px solid #3a3f58;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+
+.state-recording .orb {
+  border-color: #ff5c7a;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.state-working .orb {
+  border-color: #7c5cff;
+  animation: spin-border 1.2s linear infinite;
+}
+
+.state-done .orb {
+  border-color: #3ddc97;
+}
+
+.state-error .orb,
+.state-config .orb {
+  border-color: #ffb648;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 92, 122, 0.5); }
+  50% { box-shadow: 0 0 0 14px rgba(255, 92, 122, 0); }
+}
+
+@keyframes spin-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pill-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.pill-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.state-recording .pill-title { color: #ff8ba1; }
+.state-done .pill-title { color: #3ddc97; }
+.state-error .pill-title, .state-config .pill-title { color: #ffb648; }
+
+.pill-hint {
+  font-size: 0.78rem;
+  color: #8b91a7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timer {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+  color: #ff8ba1;
+  font-weight: 600;
+}
+
+.pill-btn {
+  -webkit-app-region: no-drag;
+  background: none;
+  border: 1px solid #3a3f58;
+  color: #8b91a7;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.pill-btn:hover {
+  color: #e8eaf2;
+  border-color: #7c5cff;
+}
+
+/* Barrinhas animadas durante a gravação */
+.bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  height: 22px;
+  margin-top: 10px;
+}
+
+.bars span {
+  width: 5px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #8f73ff, #ff5c7a);
+  animation: bar-bounce 1s ease-in-out infinite;
+}
+
+.bars span:nth-child(1)  { animation-delay: 0s;    height: 30%; }
+.bars span:nth-child(2)  { animation-delay: 0.12s; height: 65%; }
+.bars span:nth-child(3)  { animation-delay: 0.24s; height: 45%; }
+.bars span:nth-child(4)  { animation-delay: 0.06s; height: 85%; }
+.bars span:nth-child(5)  { animation-delay: 0.3s;  height: 55%; }
+.bars span:nth-child(6)  { animation-delay: 0.18s; height: 75%; }
+.bars span:nth-child(7)  { animation-delay: 0.36s; height: 40%; }
+.bars span:nth-child(8)  { animation-delay: 0.09s; height: 90%; }
+.bars span:nth-child(9)  { animation-delay: 0.27s; height: 50%; }
+.bars span:nth-child(10) { animation-delay: 0.15s; height: 70%; }
+
+@keyframes bar-bounce {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+.hidden { display: none !important; }

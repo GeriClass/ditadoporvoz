@@ -8,7 +8,7 @@ Disponível em **três formatos** que compartilham o mesmo núcleo:
 |---|---|---|
 | **App web / PWA** (raiz) | Chrome/Edge, desktop e celular | Instalável, funciona offline (menos a IA) |
 | **Extensão do Chrome** (`extension/`) | Qualquer site | Insere o texto direto no campo focado |
-| **App desktop** (`desktop/`) | Windows/macOS/Linux (Electron) | Atalho global do sistema |
+| **App desktop** (`desktop/`) | Windows/macOS/Linux (Electron) | Atalho global → pill flutuante → **cola o texto direto no app ativo** (estilo Wispr Flow) |
 
 ## Funcionalidades
 
@@ -76,7 +76,9 @@ manifest.webmanifest      metadados PWA
 sw.js                     cache offline do app shell
 icons/                    ícones do PWA
 extension/                extensão do Chrome (MV3) — ver extension/README.md
-desktop/                  app Electron — ver desktop/README.md
+desktop/                  app desktop (Electron): bandeja + atalho global +
+                          pill flutuante + colar automático — ver desktop/README.md
+.github/workflows/        gera instaladores (.exe/.dmg/.AppImage) no GitHub Actions
 ```
 
 ## Privacidade

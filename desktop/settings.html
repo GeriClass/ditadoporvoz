@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ditado por Voz — Configurações</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f1117;
+      color: #e8eaf2;
+      padding: 22px;
+      font-size: 0.92rem;
+    }
+    h1 { font-size: 1.15rem; margin-bottom: 4px; }
+    .sub { color: #8b91a7; font-size: 0.8rem; margin-bottom: 18px; }
+    fieldset {
+      border: 1px solid #2a2f42;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    legend { padding: 0 8px; font-size: 0.82rem; font-weight: 600; color: #8f73ff; }
+    label { display: flex; flex-direction: column; gap: 5px; color: #b6bccf; }
+    label.row { flex-direction: row; align-items: center; gap: 9px; color: #e8eaf2; }
+    input[type="password"], select {
+      background: #1c2030;
+      border: 1px solid #2a2f42;
+      color: #e8eaf2;
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 0.92rem;
+      outline: none;
+    }
+    input:focus, select:focus { border-color: #7c5cff; }
+    input[type="checkbox"] { width: 16px; height: 16px; accent-color: #7c5cff; }
+    .hint { font-size: 0.75rem; color: #8b91a7; }
+    .hint a { color: #8f73ff; }
+    button.save {
+      width: 100%;
+      background: #7c5cff;
+      border: none;
+      color: #fff;
+      padding: 11px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    button.save:hover { background: #8f73ff; }
+    .saved {
+      text-align: center;
+      color: #3ddc97;
+      font-size: 0.85rem;
+      height: 20px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚙️ Configurações</h1>
+  <p class="sub">Aperte o atalho em qualquer app, fale, e o texto é colado onde você estava digitando.</p>
+
+  <fieldset>
+    <legend>Transcrição (obrigatório)</legend>
+    <label>
+      Chave OpenAI — Whisper
+      <input type="password" id="whisperKey" placeholder="sk-..." autocomplete="off" />
+      <span class="hint">No desktop a transcrição usa o Whisper. Crie a chave em <a href="#" id="link-openai">platform.openai.com</a>. Fica salva só neste computador.</span>
+    </label>
+    <label>
+      Idioma da fala
+      <select id="lang">
+        <option value="pt-BR">Português (Brasil)</option>
+        <option value="pt-PT">Português (Portugal)</option>
+        <option value="en-US">English</option>
+        <option value="es-ES">Español</option>
+        <option value="fr-FR">Français</option>
+        <option value="de-DE">Deutsch</option>
+        <option value="it-IT">Italiano</option>
+      </select>
+    </label>
+    <label class="row"><input type="checkbox" id="voiceCommands" /> Comandos de voz ("vírgula", "nova linha"…)</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Formatação por IA (opcional)</legend>
+    <label class="row"><input type="checkbox" id="aiEnabled" /> Limpar e formatar o texto com IA</label>
+    <label>
+      Provedor
+      <select id="provider">
+        <option value="anthropic">Anthropic (Claude)</option>
+        <option value="openai">OpenAI (GPT)</option>
+      </select>
+    </label>
+    <label>
+      Chave de API do provedor
+      <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off" />
+    </label>
+    <label>
+      Tom do texto
+      <select id="tone">
+        <option value="natural">Natural</option>
+        <option value="email">E-mail</option>
+        <option value="mensagem">Mensagem</option>
+        <option value="anotacoes">Anotações</option>
+      </select>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Comportamento</legend>
+    <label>
+      Atalho global
+      <select id="hotkey">
+        <option value="CommandOrControl+Shift+Space">Ctrl/Cmd + Shift + Espaço</option>
+        <option value="CommandOrControl+Alt+D">Ctrl/Cmd + Alt + D</option>
+        <option value="CommandOrControl+Shift+M">Ctrl/Cmd + Shift + M</option>
+        <option value="F9">F9</option>
+      </select>
+    </label>
+    <label class="row"><input type="checkbox" id="autoPaste" /> Colar automaticamente no app ativo</label>
+    <label class="row"><input type="checkbox" id="openAtLogin" /> Iniciar junto com o sistema</label>
+    <span class="hint" id="linux-hint" style="display:none">No Linux, o colar automático usa o <b>xdotool</b> (instale com: sudo apt install xdotool).</span>
+    <span class="hint" id="mac-hint" style="display:none">No macOS, autorize o app em Ajustes → Privacidade → Acessibilidade para o colar automático funcionar.</span>
+  </fieldset>
+
+  <button id="save" class="save">Salvar</button>
+  <p id="saved" class="saved"></p>
+
+  <script src="settings.js"></script>
+</body>
+</html>
